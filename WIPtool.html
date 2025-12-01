@@ -22,7 +22,7 @@
   }
 
   /* ===== TABLE ===== */
-  table { border-collapse: collapse; width: 100%; background: #fff; }
+  table { border-collapse: collapse; width: 100%; background: #fff; margin-bottom: 10px; }
   th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: center; }
   th { background: #0078d4; color: #fff; }
   input[type="number"] {
@@ -55,7 +55,7 @@
 
 <div class="header">
   <img src="HLBlogo.png" alt="HLB Logo">
-  <h2>Client Write-Offs</h2>
+  <h2>Billing Tool</h2>
 </div>
 
 <table id="writeoffTable">
@@ -77,27 +77,73 @@
   <tr><td>Client 10</td><td>10400</td><td><input type="number" min="0" placeholder=""></td><td></td></tr>
 </table>
 
+<!-- ===== TOTALS TABLE ===== -->
+<table id="totalsTable">
+  <tr style="background:#0078d4; color:#fff;">
+    <th>Total Clients</th>
+    <th>Total Net WIP ($)</th>
+    <th>Total Fee ($)</th>
+    <th>Total Write-Off ($)</th>
+  </tr>
+  <tr style="background:#0078d4; color:#fff;">
+    <td id="totalClients">0</td>
+    <td id="totalWIP">0</td>
+    <td id="totalFee">0</td>
+    <td id="totalWriteOff">0</td>
+  </tr>
+</table>
+
 <button class="submit-btn" onclick="submitWriteOffs()">Submit Write-Offs</button>
 
 <script>
 const table = document.getElementById('writeoffTable');
 
+function updateTotals() {
+  let totalClients = 0;
+  let totalWIP = 0;
+  let totalFee = 0;
+  let totalWriteOff = 0;
+
+  table.querySelectorAll('tr').forEach((row, index) => {
+    if(index === 0) return; // skip header
+    const netWip = parseFloat(row.cells[1].textContent.replace(/,/g,'')) || 0;
+    const feeInput = row.cells[2].querySelector('input');
+    const fee = parseFloat(feeInput.value) || 0;
+    const writeOff = parseFloat(row.cells[3].textContent) || 0;
+
+    totalClients += 1;
+    totalWIP += netWip;
+    totalFee += fee;
+    totalWriteOff += writeOff;
+  });
+
+  document.getElementById('totalClients').textContent = totalClients;
+  document.getElementById('totalWIP').textContent = totalWIP;
+  document.getElementById('totalFee').textContent = totalFee;
+  document.getElementById('totalWriteOff').textContent = totalWriteOff;
+}
+
+// Listen for changes in Fee inputs to recalc Write-Off and totals
 table.querySelectorAll('tr').forEach((row, index) => {
-  if(index === 0) return; // skip header
+  if(index === 0) return;
   const feeInput = row.cells[2].querySelector('input');
   const netWip = parseFloat(row.cells[1].textContent.replace(/,/g,'')) || 0;
 
   feeInput.addEventListener('input', () => {
     if(feeInput.value === '') {
-      row.cells[3].textContent = ''; // blank until input
+      row.cells[3].textContent = '';
     } else {
       let fee = parseFloat(feeInput.value) || 0;
       let writeOff = netWip - fee;
       if(writeOff < 0) writeOff = 0;
       row.cells[3].textContent = Math.round(writeOff);
     }
+    updateTotals();
   });
 });
+
+// Initial totals on page load
+updateTotals();
 
 function submitWriteOffs() {
   const results = [];
