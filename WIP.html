@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>WIP – Total Costs Summary</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0; padding: 20px;
+    background: #f5f7fa;
+  }
+  /* Navigation Bar */
+  .topbar {
+    display: flex;
+    background: #0078d4;
+    padding: 10px 20px;
+    gap: 10px;
+  }
+  .topbar a {
+    color: white;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: bold;
+  }
+  .topbar a.active {
+    background: #005ea3;
+  }
+  .topbar a:hover:not(.active) {
+    background: #005ea3;
+  }
+
+  /* Table Styles */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: white;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  }
+  th, td {
+    border: 1px solid #ccc;
+    padding: 8px 10px;
+    text-align: center;
+    font-size: 13px;
+  }
+  th {
+    background: #003366;
+    color: white;
+  }
+  td.numeric {
+    text-align: right;
+    font-family: monospace;
+  }
+  tr.total-row {
+    font-weight: bold;
+    background: #d9edf7;
+  }
+  /* Key activities and summary box */
+  .summary-card {
+    background: #e0f7fa;
+    padding: 12px;
+    margin-top: 20px;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    font-size: 14px;
+  }
+  .summary-table {
+    margin-top: 10px;
+    width: 300px;
+    float: right;
+    border-collapse: collapse;
+  }
+  .summary-table td {
+    border: none;
+    padding: 4px 8px;
+    font-size: 14px;
+  }
+  .summary-table td.label {
+    font-weight: bold;
+    text-align: left;
+  }
+  .summary-table td.value {
+    text-align: right;
+    font-family: monospace;
+  }
+  .final-cost {
+    background: #003366;
+    color: white;
+    padding: 12px;
+    width: 300px;
+    font-size: 16px;
+    text-align: center;
+    margin-top: 50px;
+    border-radius: 6px;
+    clear: both;
+  }
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<div class="topbar">
+  <a href="WIPtool.html">Fee</a>
+  <a href="#" class="active">WIP</a>
+</div>
+
+<h2>Total Costs</h2>
+
+<table>
+  <tr>
+    <th rowspan="2">Team Member</th>
+    <th rowspan="2">Rate/Hr</th>
+    <th colspan="2">Week 17 Oct 2025</th>
+    <th colspan="2">Week 24 Oct 2025</th>
+    <th colspan="2">Week 31 Oct 2025</th>
+    <th colspan="2">Week 07 Nov 2025</th>
+    <th rowspan="2">Total Hours</th>
+    <th rowspan="2">Total Cost $</th>
+  </tr>
+  <tr>
+    <th>Hours</th><th>Cost $</th>
+    <th>Hours</th><th>Cost $</th>
+    <th>Hours</th><th>Cost $</th>
+    <th>Hours</th><th>Cost $</th>
+  </tr>
+  <tr>
+    <td>WANG Joey</td><td class="numeric">$580</td><td class="numeric">9.30</td><td class="numeric">$5,394</td><td class="numeric">28.20</td><td class="numeric">$16,356</td><td class="numeric">17.50</td><td class="numeric">$10,150</td><td class="numeric">0.70</td><td class="numeric">$406</td><td class="numeric">55.70</td><td class="numeric">$32,306</td>
+  </tr>
+  <tr>
+    <td>ZHOU Joanne</td><td class="numeric">$410</td><td class="numeric">15.40</td><td class="numeric">$6,314</td><td class="numeric">22.80</td><td class="numeric">$9,348</td><td class="numeric">6.70</td><td class="numeric">$2,747</td><td class="numeric">0.00</td><td class="numeric">$0</td><td class="numeric">44.90</td><td class="numeric">$18,409</td>
+  </tr>
+  <tr>
+    <td>ACKERMAN Jonathan</td><td class="numeric">$790</td><td class="numeric">1.90</td><td class="numeric">$1,501</td><td class="numeric">20.80</td><td class="numeric">$16,432</td><td class="numeric">1.20</td><td class="numeric">$948</td><td class="numeric">0.00</td><td class="numeric">$0</td><td class="numeric">23.90</td><td class="numeric">$18,881</td>
+  </tr>
+  <tr>
+    <td>FULLER Jonathan</td><td class="numeric">$215</td><td class="numeric">0.00</td><td class="numeric">$0</td><td class="numeric">1.50</td><td class="numeric">$323</td><td class="numeric">0.00</td><td class="numeric">$0</td><td class="numeric">0.00</td><td class="numeric">$0</td><td class="numeric">1.50</td><td class="numeric">$323</td>
+  </tr>
+  <tr>
+    <td>KING Alexander</td><td class="numeric">$790</td><td class="numeric">0.00</td><td class="numeric">$0</td><td class="numeric">0.50</td><td class="numeric">$395</td><td class="numeric">1.80</td><td class="numeric">$1,422</td><td class="numeric">0.00</td><td class="numeric">$0</td><td class="numeric">2.30</td><td class="numeric">$1,817</td>
+  </tr>
+  <tr>
+    <td>THORP Simon</td><td class="numeric">$790</td><td class="numeric">11.10</td><td class="numeric">$8,769</td><td class="numeric">7.50</td><td class="numeric">$5,925</td><td class="numeric">5.00</td><td class="numeric">$3,950</td><td class="numeric">1.50</td><td class="numeric">$1,185</td><td class="numeric">25.10</td><td class="numeric">$19,829</td>
+  </tr>
+  <tr>
+    <td>XIA Yi</td><td class="numeric">$625</td><td class="numeric">3.50</td><td class="numeric">$2,188</td><td class="numeric">1.00</td><td class="numeric">$625</td><td class="numeric">0.00</td><td class="numeric">$0</td><td class="numeric">0.00</td><td class="numeric">$0</td><td class="numeric">4.50</td><td class="numeric">$2,813</td>
+  </tr>
+  <tr>
+    <td>FELDMAN Justin</td><td class="numeric">$115</td><td class="numeric">3.10</td><td class="numeric">$357</td><td class="numeric">3.40</td><td class="numeric">$391</td><td class="numeric">2.50</td><td class="numeric">$288</td><td class="numeric">0.00</td><td class="numeric">$0</td><td class="numeric">9.00</td><td class="numeric">$1,035</td>
+  </tr>
+  <tr class="total-row">
+    <td colspan="2">Weekly Totals</td>
+    <td class="numeric">44.30</td><td class="numeric">$24,522</td>
+    <td class="numeric">85.70</td><td class="numeric">$49,795</td>
+    <td class="numeric">34.70</td><td class="numeric">$19,505</td>
+    <td class="numeric">2.20</td><td class="numeric">$1,591</td>
+    <td class="numeric">166.90</td><td class="numeric">$95,412</td>
+  </tr>
+</table>
+
+<div class="summary-card">
+  <h3>Key Activities:</h3>
+  <p>1. Collaborative Legal &amp; Tax Analysis</p>
+</div>
+
+<table class="summary-table">
+  <tr>
+    <td class="label">Tech and Admin Levy 4%</td>
+    <td class="value">3,816</td>
+  </tr>
+</table>
+
+<div class="final-cost">
+  Final Cost ($): <strong>99,228</strong>
+</div>
+
+</body>
+</html>
