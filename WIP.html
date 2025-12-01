@@ -7,34 +7,59 @@
   body {
     font-family: Arial, sans-serif;
     margin: 0; padding: 20px;
-    background: #f5f7fa;
+    background: white;
+    color: #000;
   }
-  /* Navigation Bar */
-  .topbar {
+
+  /* Navigation bar container */
+  .navbar {
     display: flex;
-    background: #0078d4;
+    align-items: center;
+    background: white;
     padding: 10px 20px;
-    gap: 10px;
+    box-shadow: none;
   }
-  .topbar a {
+  /* Logo */
+  .navbar img {
+    height: 40px;
+    margin-right: 20px;
+    user-select: none;
+  }
+  /* Buttons container */
+  .nav-buttons {
+    display: flex;
+    gap: 12px;
+  }
+  /* Buttons */
+  .nav-button {
+    background-color: #0078d4; /* your blue */
     color: white;
-    text-decoration: none;
-    padding: 8px 16px;
-    border-radius: 6px;
+    border: none;
+    padding: 10px 18px;
     font-weight: bold;
+    font-size: 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
   }
-  .topbar a.active {
-    background: #005ea3;
+  .nav-button:hover {
+    background-color: #005ea3; /* slightly darker blue */
   }
-  .topbar a:hover:not(.active) {
-    background: #005ea3;
+  /* Active page button styling */
+  .nav-button.active {
+    background-color: #005ea3;
+    cursor: default;
   }
 
   /* Table Styles */
   table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
+    margin-top: 30px;
     background: white;
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   }
@@ -45,7 +70,7 @@
     font-size: 13px;
   }
   th {
-    background: #003366;
+    background: #0078d4; /* changed to match your blue */
     color: white;
   }
   td.numeric {
@@ -56,6 +81,7 @@
     font-weight: bold;
     background: #d9edf7;
   }
+
   /* Key activities and summary box */
   .summary-card {
     background: #e0f7fa;
@@ -85,7 +111,7 @@
     font-family: monospace;
   }
   .final-cost {
-    background: #003366;
+    background: #0078d4; /* your blue */
     color: white;
     padding: 12px;
     width: 300px;
@@ -99,10 +125,13 @@
 </head>
 <body>
 
-<!-- Navigation -->
-<div class="topbar">
-  <a href="WIPtool.html">Fee</a>
-  <a href="#" class="active">WIP</a>
+<!-- Navigation bar -->
+<div class="navbar">
+  <img src="HLBlogo.png" alt="HLB Logo" />
+  <div class="nav-buttons">
+    <a href="WIPtool.html" class="nav-button">Billing Tool</a>
+    <a href="#" class="nav-button active" aria-current="page">WIP Analysis</a>
+  </div>
 </div>
 
 <h2>Total Costs</h2>
