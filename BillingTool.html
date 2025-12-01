@@ -139,12 +139,13 @@ function updateTotals() {
     const netWip = parseFloat(row.cells[1].textContent.replace(/,/g,'')) || 0;
     const feeInput = row.cells[2].querySelector('input');
     const fee = parseFloat(feeInput.value) || 0;
-    const writeOff = parseFloat(row.cells[3].textContent) || 0;
+    const writeOffText = row.cells[3].textContent;
+    let writeOff = isNaN(parseFloat(writeOffText)) ? 0 : parseFloat(writeOffText);
 
     totalClients += 1;
     totalWIP += netWip;
     totalFee += fee;
-    totalWriteOff += writeOff;
+    totalWriteOff += writeOffText === "Fee exceeds WIP" ? 0 : writeOff;
   });
 
   document.getElementById('totalClients').textContent = totalClients;
@@ -163,9 +164,12 @@ table.querySelectorAll('tr').forEach((row, index) => {
       row.cells[3].textContent = '';
     } else {
       let fee = parseFloat(feeInput.value) || 0;
-      let writeOff = netWip - fee;
-      if(writeOff < 0) writeOff = 0;
-      row.cells[3].textContent = Math.round(writeOff);
+      if(fee > netWip) {
+        row.cells[3].textContent = "Fee exceeds WIP";
+      } else {
+        let writeOff = netWip - fee;
+        row.cells[3].textContent = Math.round(writeOff);
+      }
     }
     updateTotals();
   });
