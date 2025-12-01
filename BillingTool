@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Billing Tool</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 0; background: #ffffff; padding: 20px; }
+
+  /* ===== NAVIGATION BAR ===== */
+  .navbar {
+    display: flex;
+    align-items: center;
+    background: white;
+    padding: 10px 20px;
+    box-shadow: none;
+    margin-bottom: 20px;
+  }
+  .navbar img {
+    height: 40px;
+    margin-right: 20px;
+    user-select: none;
+  }
+  .nav-buttons {
+    display: flex;
+    gap: 12px;
+  }
+  .nav-button {
+    background-color: #0078d4;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    font-weight: bold;
+    font-size: 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+  }
+  .nav-button:hover {
+    background-color: #005ea3;
+  }
+  .nav-button.active {
+    background-color: #005ea3;
+    cursor: default;
+  }
+
+  /* ===== TABLE ===== */
+  table { border-collapse: collapse; width: 100%; background: #fff; margin-bottom: 10px; }
+  th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: center; }
+  th { background: #0078d4; color: #fff; }
+  input[type="number"] {
+    width: 80px; 
+    padding: 4px; 
+    text-align: right;
+    -moz-appearance: textfield;
+  }
+  input[type=number]::-webkit-inner-spin-button,
+  input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* ===== SUBMIT BUTTON ===== */
+  .submit-btn {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    background: #0078d4;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  .submit-btn:hover { background: #005ea3; }
+</style>
+</head>
+<body>
+
+<!-- Navigation bar -->
+<div class="navbar">
+  <img src="HLBlogo.png" alt="HLB Logo" />
+  <div class="nav-buttons">
+    <a href="#" class="nav-button active" aria-current="page">Billing Tool</a>
+    <a href="WIP.html" class="nav-button">WIP Analysis</a>
+  </div>
+</div>
+
+<table id="writeoffTable">
+  <tr>
+    <th>Client</th>
+    <th>Net WIP ($)</th>
+    <th>Fee ($)</th>
+    <th>Write-Off ($)</th>
+  </tr>
+  <tr><td>Client 1</td><td>12500</td><td><input type="number" min="0" placeholder=""></td><td></td></tr>
+  <tr><td>Client 2</td><td>8200</td><td><input type="number" min="0" placeholder=""></td><td></td></tr>
+  <tr><td>Client 3</td><td>15300</td><td><input type="number" min="0" placeholder=""></td><td></td></tr>
+  <tr><td>Client 4</td><td>6700</td><td><input type="number" min="0" placeholder=""></td><td></td></tr>
+  <tr><td>Client 5</td><td>9800</td><td><input type="number" min="0" placeholder=""></td><td></td></tr>
+  <tr><td>Client 6</td><td>14100</td><td><input type="number" min="0" placeholder=""></td><td></td></tr>
+  <tr><td>Client 7</td><td>7500</td><td><input type="number" min="0" placeholder=""></td><td></td></tr>
+  <tr><td>Client 8</td><td>11200</td><td><input type="number" min="0" placeholder=""></td><td></td></tr>
+  <tr><td>Client 9</td><td>5900</td><td><input type="number" min="0" placeholder=""></td><td></td></tr>
+  <tr><td>Client 10</td><td>10400</td><td><input type="number" min="0" placeholder=""></td><td></td></tr>
+</table>
+
+<!-- ===== TOTALS TABLE ===== -->
+<table id="totalsTable">
+  <tr style="background:#0078d4; color:#fff;">
+    <th>Total Clients</th>
+    <th>Total Net WIP ($)</th>
+    <th>Total Fee ($)</th>
+    <th>Total Write-Off ($)</th>
+  </tr>
+  <tr style="background:#0078d4; color:#fff;">
+    <td id="totalClients">0</td>
+    <td id="totalWIP">0</td>
+    <td id="totalFee">0</td>
+    <td id="totalWriteOff">0</td>
+  </tr>
+</table>
+
+<button class="submit-btn" onclick="submitWriteOffs()">Submit Write-Offs</button>
+
+<script>
+const table = document.getElementById('writeoffTable');
+
+function updateTotals() {
+  let totalClients = 0;
+  let totalWIP = 0;
+  let totalFee = 0;
+  let totalWriteOff = 0;
+
+  table.querySelectorAll('tr').forEach((row, index) => {
+    if(index === 0) return;
+    const netWip = parseFloat(row.cells[1].textContent.replace(/,/g,'')) || 0;
+    const feeInput = row.cells[2].querySelector('input');
+    const fee = parseFloat(feeInput.value) || 0;
+    const writeOff = parseFloat(row.cells[3].textContent) || 0;
+
+    totalClients += 1;
+    totalWIP += netWip;
+    totalFee += fee;
+    totalWriteOff += writeOff;
+  });
+
+  document.getElementById('totalClients').textContent = totalClients;
+  document.getElementById('totalWIP').textContent = totalWIP;
+  document.getElementById('totalFee').textContent = totalFee;
+  document.getElementById('totalWriteOff').textContent = totalWriteOff;
+}
+
+table.querySelectorAll('tr').forEach((row, index) => {
+  if(index === 0) return;
+  const feeInput = row.cells[2].querySelector('input');
+  const netWip = parseFloat(row.cells[1].textContent.replace(/,/g,'')) || 0;
+
+  feeInput.addEventListener('input', () => {
+    if(feeInput.value === '') {
+      row.cells[3].textContent = '';
+    } else {
+      let fee = parseFloat(feeInput.value) || 0;
+      let writeOff = netWip - fee;
+      if(writeOff < 0) writeOff = 0;
+      row.cells[3].textContent = Math.round(writeOff);
+    }
+    updateTotals();
+  });
+});
+
+updateTotals();
+
+function submitWriteOffs() {
+  const results = [];
+  table.querySelectorAll('tr').forEach((row, index) => {
+    if(index === 0) return;
+    const client = row.cells[0].textContent;
+    const netWip = row.cells[1].textContent;
+    const fee = row.cells[2].querySelector('input').value;
+    const writeOff = row.cells[3].textContent;
+    if(fee && fee !== '') {
+      results.push({client, netWip, fee, writeOff});
+    }
+  });
+  if(results.length === 0) {
+    alert("No write-offs entered.");
+  } else {
+    console.log("Write-Offs Submitted:", results);
+    alert("Write-offs submitted! Check console for details.");
+  }
+}
+</script>
+
+</body>
+</html>
