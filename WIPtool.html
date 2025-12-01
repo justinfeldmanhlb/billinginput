@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>WIP Tool</title>
+<title>Client Write-Offs</title>
 <style>
   body { font-family: Arial, sans-serif; margin: 0; background: #ffffff; padding: 20px; }
   
@@ -65,16 +65,16 @@
     <th>Fee ($)</th>
     <th>Write-Off ($)</th>
   </tr>
-  <tr><td>Client 1</td><td>12500</td><td><input type="number" min="0" value="0"></td><td>12500</td></tr>
-  <tr><td>Client 2</td><td>8200</td><td><input type="number" min="0" value="0"></td><td>8200</td></tr>
-  <tr><td>Client 3</td><td>15300</td><td><input type="number" min="0" value="0"></td><td>15300</td></tr>
-  <tr><td>Client 4</td><td>6700</td><td><input type="number" min="0" value="0"></td><td>6700</td></tr>
-  <tr><td>Client 5</td><td>9800</td><td><input type="number" min="0" value="0"></td><td>9800</td></tr>
-  <tr><td>Client 6</td><td>14100</td><td><input type="number" min="0" value="0"></td><td>14100</td></tr>
-  <tr><td>Client 7</td><td>7500</td><td><input type="number" min="0" value="0"></td><td>7500</td></tr>
-  <tr><td>Client 8</td><td>11200</td><td><input type="number" min="0" value="0"></td><td>11200</td></tr>
-  <tr><td>Client 9</td><td>5900</td><td><input type="number" min="0" value="0"></td><td>5900</td></tr>
-  <tr><td>Client 10</td><td>10400</td><td><input type="number" min="0" value="0"></td><td>10400</td></tr>
+  <tr><td>Client 1</td><td>12500</td><td><input type="number" min="0" placeholder=""></td><td></td></tr>
+  <tr><td>Client 2</td><td>8200</td><td><input type="number" min="0" placeholder=""></td><td></td></tr>
+  <tr><td>Client 3</td><td>15300</td><td><input type="number" min="0" placeholder=""></td><td></td></tr>
+  <tr><td>Client 4</td><td>6700</td><td><input type="number" min="0" placeholder=""></td><td></td></tr>
+  <tr><td>Client 5</td><td>9800</td><td><input type="number" min="0" placeholder=""></td><td></td></tr>
+  <tr><td>Client 6</td><td>14100</td><td><input type="number" min="0" placeholder=""></td><td></td></tr>
+  <tr><td>Client 7</td><td>7500</td><td><input type="number" min="0" placeholder=""></td><td></td></tr>
+  <tr><td>Client 8</td><td>11200</td><td><input type="number" min="0" placeholder=""></td><td></td></tr>
+  <tr><td>Client 9</td><td>5900</td><td><input type="number" min="0" placeholder=""></td><td></td></tr>
+  <tr><td>Client 10</td><td>10400</td><td><input type="number" min="0" placeholder=""></td><td></td></tr>
 </table>
 
 <button class="submit-btn" onclick="submitWriteOffs()">Submit Write-Offs</button>
@@ -88,10 +88,14 @@ table.querySelectorAll('tr').forEach((row, index) => {
   const netWip = parseFloat(row.cells[1].textContent.replace(/,/g,'')) || 0;
 
   feeInput.addEventListener('input', () => {
-    let fee = parseFloat(feeInput.value) || 0;
-    let writeOff = netWip - fee;
-    if(writeOff < 0) writeOff = 0;
-    row.cells[3].textContent = Math.round(writeOff);
+    if(feeInput.value === '') {
+      row.cells[3].textContent = ''; // blank until input
+    } else {
+      let fee = parseFloat(feeInput.value) || 0;
+      let writeOff = netWip - fee;
+      if(writeOff < 0) writeOff = 0;
+      row.cells[3].textContent = Math.round(writeOff);
+    }
   });
 });
 
@@ -103,7 +107,7 @@ function submitWriteOffs() {
     const netWip = row.cells[1].textContent;
     const fee = row.cells[2].querySelector('input').value;
     const writeOff = row.cells[3].textContent;
-    if(fee && fee != '0') {
+    if(fee && fee !== '') {
       results.push({client, netWip, fee, writeOff});
     }
   });
