@@ -49,17 +49,31 @@
   .nav-button:hover {
     background-color: #005ea3; /* slightly darker blue on hover */
   }
-  /* Active page button styling */
   .nav-button.active {
     background-color: #005ea3;
     cursor: default;
+  }
+
+  /* Client input */
+  .client-input-container {
+    margin-top: 20px;
+    margin-bottom: 10px;
+  }
+  .client-input-container label {
+    font-weight: bold;
+    margin-right: 10px;
+  }
+  .client-input-container input {
+    padding: 6px 10px;
+    font-size: 14px;
+    width: 150px;
   }
 
   /* Table Styles */
   table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 30px;
+    margin-top: 10px;
     background: white;
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   }
@@ -126,6 +140,12 @@
     <a href="WIPtool.html" class="nav-button">Billing Tool</a>
     <a href="#" class="nav-button active" aria-current="page">WIP Analysis</a>
   </div>
+</div>
+
+<!-- Client input -->
+<div class="client-input-container">
+  <label for="clientName"><strong>Client:</strong></label>
+  <input type="text" id="clientName" value="Client1" />
 </div>
 
 <h2>WIP Analysis</h2>
