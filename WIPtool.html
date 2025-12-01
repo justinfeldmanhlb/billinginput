@@ -2,143 +2,93 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>WIP Write-Off Tool</title>
+<title>Write-Offs</title>
 <style>
-  body { font-family: Arial, sans-serif; margin: 20px; background: #f5f7fa; }
-  h1, h2 { margin: 0 0 10px 0; }
-  label { margin-right: 10px; }
-  input, select, button { padding: 6px 10px; margin: 4px 0; border-radius: 4px; border: 1px solid #ccc; }
-  button { cursor: pointer; }
-  table { width: 100%; border-collapse: collapse; margin-top: 12px; background: #fff; }
-  th, td { border: 1px solid #ccc; padding: 6px 10px; text-align: right; }
-  th { background: #eef3f7; text-align: left; }
-  tfoot td { font-weight: bold; background: #f0f4f8; }
-  td.left { text-align: left; }
+  body { font-family: Arial, sans-serif; margin: 0; background: #f5f7fa; padding: 20px; }
+
+  /* ===== TABLE ===== */
+  table { border-collapse: collapse; width: 100%; margin-top: 20px; background: #fff; }
+  th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: center; }
+  th { background: #00796b; color: #fff; }
+  input[type="number"] { width: 80px; padding: 4px; text-align: right; }
+
+  /* ===== SUBMIT BUTTON ===== */
+  .submit-btn {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    background: #00796b;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  .submit-btn:hover { background: #004d40; }
 </style>
 </head>
 <body>
 
-<h1>WIP Write-Off Tool</h1>
+<h2>Client Write-Offs</h2>
 
-<!-- Partner Name -->
-<div>
-  <label for="partnerName">Name:</label>
-  <input type="text" id="partnerName" placeholder="Your name">
-</div>
-
-<!-- Add Client -->
-<div style="margin-top:10px;">
-  <label for="clientSelect">Client Add:</label>
-  <select id="clientSelect">
-    <option value="Client 1">Client 1</option>
-    <option value="Client 2">Client 2</option>
-    <option value="Client 3">Client 3</option>
-    <option value="Client 4">Client 4</option>
-    <option value="Client 5">Client 5</option>
-    <option value="Client 6">Client 6</option>
-    <option value="Client 7">Client 7</option>
-    <option value="Client 8">Client 8</option>
-    <option value="Client 9">Client 9</option>
-    <option value="Client 10">Client 10</option>
-  </select>
-  <button id="addClientBtn">Add Client</button>
-</div>
-
-<!-- WIP Table -->
-<table>
-  <thead>
-    <tr>
-      <th class="left">Client</th>
-      <th>Net WIP</th>
-      <th>Fee</th>
-      <th>Write-Off</th>
-    </tr>
-  </thead>
-  <tbody id="clientTableBody">
-    <!-- client rows go here -->
-  </tbody>
-  <tfoot>
-    <tr>
-      <td class="left">Totals:</td>
-      <td id="totalNetWip">0.00</td>
-      <td id="totalFee">0.00</td>
-      <td id="totalWriteOff">0.00</td>
-    </tr>
-    <tr>
-      <td class="left">Total Clients:</td>
-      <td colspan="3" id="totalClients">0 clients</td>
-    </tr>
-  </tfoot>
+<table id="writeoffTable">
+  <tr>
+    <th>Client</th>
+    <th>Net WIP ($)</th>
+    <th>Fee Amount ($)</th>
+    <th>Write-Off ($)</th>
+  </tr>
+  <!-- Dummy client rows -->
+  <tr><td>ACME Corp</td><td class="netwip">12500</td><td><input type="number" min="0" value="0" class="fee"></td><td class="writeoff">12500</td></tr>
+  <tr><td>Beta LLC</td><td class="netwip">8200</td><td><input type="number" min="0" value="0" class="fee"></td><td class="writeoff">8200</td></tr>
+  <tr><td>Gamma Inc</td><td class="netwip">15300</td><td><input type="number" min="0" value="0" class="fee"></td><td class="writeoff">15300</td></tr>
+  <tr><td>Delta Co</td><td class="netwip">6700</td><td><input type="number" min="0" value="0" class="fee"></td><td class="writeoff">6700</td></tr>
+  <tr><td>Epsilon Ltd</td><td class="netwip">9800</td><td><input type="number" min="0" value="0" class="fee"></td><td class="writeoff">9800</td></tr>
+  <tr><td>Zeta Partners</td><td class="netwip">14100</td><td><input type="number" min="0" value="0" class="fee"></td><td class="writeoff">14100</td></tr>
+  <tr><td>Eta Group</td><td class="netwip">7500</td><td><input type="number" min="0" value="0" class="fee"></td><td class="writeoff">7500</td></tr>
+  <tr><td>Theta Enterprises</td><td class="netwip">11200</td><td><input type="number" min="0" value="0" class="fee"></td><td class="writeoff">11200</td></tr>
+  <tr><td>Iota Solutions</td><td class="netwip">5900</td><td><input type="number" min="0" value="0" class="fee"></td><td class="writeoff">5900</td></tr>
+  <tr><td>Kappa Consulting</td><td class="netwip">10400</td><td><input type="number" min="0" value="0" class="fee"></td><td class="writeoff">10400</td></tr>
 </table>
 
+<button class="submit-btn" onclick="submitWriteOffs()">Submit Write-Offs</button>
+
 <script>
-  const dummyWip = {
-    "Client 1": 12000,
-    "Client 2": 8500,
-    "Client 3": 15300,
-    "Client 4": 6700,
-    "Client 5": 9800,
-    "Client 6": 14100,
-    "Client 7": 7500,
-    "Client 8": 11200,
-    "Client 9": 5900,
-    "Client 10": 10400
-  };
-
-  const tbody = document.getElementById('clientTableBody');
-  const clientSelect = document.getElementById('clientSelect');
-  const addClientBtn = document.getElementById('addClientBtn');
-
-  const totalNetWipEl = document.getElementById('totalNetWip');
-  const totalFeeEl = document.getElementById('totalFee');
-  const totalWriteOffEl = document.getElementById('totalWriteOff');
-  const totalClientsEl = document.getElementById('totalClients');
-
-  function recalcTotals() {
-    let totalNetWip = 0, totalFee = 0, totalWriteOff = 0;
-    const rows = tbody.querySelectorAll('tr');
-    rows.forEach(row => {
-      const netWip = parseFloat(row.querySelector('.net-wip').textContent) || 0;
-      const fee = parseFloat(row.querySelector('.fee').value) || 0;
-      const writeOff = parseFloat(row.querySelector('.write-off').textContent) || 0;
-      totalNetWip += netWip;
-      totalFee += fee;
-      totalWriteOff += writeOff;
-    });
-    totalNetWipEl.textContent = totalNetWip.toFixed(2);
-    totalFeeEl.textContent = totalFee.toFixed(2);
-    totalWriteOffEl.textContent = totalWriteOff.toFixed(2);
-    totalClientsEl.textContent = rows.length + ' clients';
-  }
-
-  function recalcWriteOff(row) {
-    const netWip = parseFloat(row.querySelector('.net-wip').textContent) || 0;
-    const fee = parseFloat(row.querySelector('.fee').value) || 0;
-    let writeOff = netWip - fee;
-    if (writeOff < 0) writeOff = 0;
-    row.querySelector('.write-off').textContent = writeOff.toFixed(2);
-    recalcTotals();
-  }
-
-  function addClient(name) {
-    const row = document.createElement('tr');
-    const netWip = dummyWip[name] || 0;
-    row.innerHTML = `
-      <td class="left">${name}</td>
-      <td class="net-wip">${netWip}</td>
-      <td><input type="number" class="fee" min="0" step="0.01"></td>
-      <td class="write-off">${netWip.toFixed(2)}</td>
-    `;
-    const feeInput = row.querySelector('.fee');
-    feeInput.addEventListener('input', () => recalcWriteOff(row));
-    tbody.appendChild(row);
-    recalcTotals();
-  }
-
-  addClientBtn.addEventListener('click', () => {
-    const clientName = clientSelect.value;
-    addClient(clientName);
+// Auto-calculate Write-Off when Fee changes
+const rows = document.querySelectorAll('#writeoffTable tr');
+rows.forEach((row, index) => {
+  if (index === 0) return; // skip header
+  const feeInput = row.querySelector('.fee');
+  feeInput.addEventListener('input', () => {
+    const netWip = parseFloat(row.querySelector('.netwip').textContent) || 0;
+    let fee = parseFloat(feeInput.value) || 0;
+    let writeoff = netWip - fee;
+    if (writeoff < 0) writeoff = 0;
+    row.querySelector('.writeoff').textContent = writeoff.toFixed(2);
   });
+});
+
+function submitWriteOffs() {
+  const table = document.getElementById('writeoffTable');
+  const rows = table.querySelectorAll('tr');
+  const results = [];
+  
+  for (let i = 1; i < rows.length; i++) {
+    const client = rows[i].cells[0].textContent;
+    const netwip = rows[i].cells[1].textContent;
+    const fee = rows[i].cells[2].querySelector('input').value;
+    const writeoff = rows[i].cells[3].textContent;
+    if (fee && fee != '0') {
+      results.push({ client, netwip, fee, writeoff });
+    }
+  }
+  
+  if (results.length === 0) {
+    alert("No fees entered.");
+  } else {
+    console.log("Write-Offs Submitted:", results);
+    alert("Write-offs submitted! Check console for details.");
+  }
+}
 </script>
 
 </body>
