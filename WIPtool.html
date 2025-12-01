@@ -1,111 +1,253 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Write-Offs</title>
-<style>
-  body { font-family: Arial, sans-serif; margin: 0; background: #f5f7fa; padding: 20px; }
-  
-  /* ===== TOPBAR ===== */
-  .topbar {
-    display: flex;
-    align-items: center;
-    background: #4fc3f7;
-    padding: 10px 20px;
-    color: #fff;
-    gap: 10px;
-  }
-  .topbar button {
-    background: #fff;
-    color: #00796b;
-    border: none;
-    border-radius: 6px;
-    padding: 8px 14px;
-    font-size: 16px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.07);
-  }
-  .topbar button:hover { background: #e0f2f1; }
-
-  /* ===== TABLE ===== */
-  table { border-collapse: collapse; width: 100%; margin-top: 20px; background: #fff; }
-  th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: center; }
-  th { background: #00796b; color: #fff; }
-  input[type="number"] { width: 80px; padding: 4px; text-align: right; }
-
-  /* ===== SUBMIT BUTTON ===== */
-  .submit-btn {
-    margin-top: 20px;
-    padding: 10px 20px;
-    font-size: 16px;
-    background: #00796b;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-  }
-  .submit-btn:hover { background: #004d40; }
-</style>
+  <meta charset="UTF-8">
+  <title>WIP Write-Off Tool</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f5f7fa; }
+    h1 { margin-top: 0; }
+    .card {
+      background: #fff;
+      padding: 16px;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    label { font-size: 14px; margin-right: 8px; }
+    input[type="text"], input[type="number"] {
+      padding: 6px 8px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+    }
+    th, td {
+      border-bottom: 1px solid #e0e0e0;
+      padding: 6px 8px;
+      text-align: left;
+      font-size: 14px;
+    }
+    th { background: #eef3f7; }
+    tfoot td {
+      font-weight: bold;
+      background: #f0f4f8;
+    }
+    button { 
+      padding: 8px 14px;
+      margin-top: 10px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .btn-primary { background: #0078d4; color: #fff; }
+    .btn-secondary { background: #e0e0e0; }
+    .btn-danger { background: #f44336; color: #fff; }
+    .right { text-align: right; }
+    .small { font-size: 12px; color: #666; }
+    .row-actions { white-space: nowrap; }
+    .write-off[readonly] { background: #f9f9f9; }
+  </style>
 </head>
 <body>
 
-<!-- ===== TOPBAR ===== -->
-<div class="topbar">
-  <button onclick="window.location.href='timesheet3.html'">📝 Timesheet</button>
-  <button onclick="window.location.href='fees.html'">💰 Fees</button>
-  <button class="active">✏️ Write-Offs</button>
-</div>
+  <div class="card">
+    <h1>WIP Write-Off Tool</h1>
+    <p class="small">Partners enter WIP, fee, and calculate write-offs. Submit sends JSON to Power Automate.</p>
 
-<h2>Client Write-Offs</h2>
+    <!-- Partner info -->
+    <div style="margin-bottom: 10px;">
+      <label for="partnerId">Partner ID:</label>
+      <input type="text" id="partnerId" placeholder="e.g. JF123">
 
-<table id="writeoffTable">
-  <tr>
-    <th>Client</th>
-    <th>Fee Amount ($)</th>
-    <th>Write-Off ($)</th>
-  </tr>
-  <!-- Dummy client rows -->
-  <tr><td>ACME Corp</td><td>12,500</td><td><input type="number" min="0" value="0"></td></tr>
-  <tr><td>Beta LLC</td><td>8,200</td><td><input type="number" min="0" value="0"></td></tr>
-  <tr><td>Gamma Inc</td><td>15,300</td><td><input type="number" min="0" value="0"></td></tr>
-  <tr><td>Delta Co</td><td>6,700</td><td><input type="number" min="0" value="0"></td></tr>
-  <tr><td>Epsilon Ltd</td><td>9,800</td><td><input type="number" min="0" value="0"></td></tr>
-  <tr><td>Zeta Partners</td><td>14,100</td><td><input type="number" min="0" value="0"></td></tr>
-  <tr><td>Eta Group</td><td>7,500</td><td><input type="number" min="0" value="0"></td></tr>
-  <tr><td>Theta Enterprises</td><td>11,200</td><td><input type="number" min="0" value="0"></td></tr>
-  <tr><td>Iota Solutions</td><td>5,900</td><td><input type="number" min="0" value="0"></td></tr>
-  <tr><td>Kappa Consulting</td><td>10,400</td><td><input type="number" min="0" value="0"></td></tr>
-</table>
+      <label for="partnerName" style="margin-left: 16px;">Partner Name:</label>
+      <input type="text" id="partnerName" placeholder="e.g. Justin Feldman">
+    </div>
+  </div>
 
-<button class="submit-btn" onclick="submitWriteOffs()">Submit Write-Offs</button>
+  <div class="card">
+    <div style="display:flex; justify-content: space-between; align-items: center;">
+      <h2 style="margin:0;">Client WIP Session</h2>
+      <button class="btn-secondary" id="addRowBtn">+ Add Client</button>
+    </div>
 
-<script>
-function submitWriteOffs() {
-  const table = document.getElementById('writeoffTable');
-  const rows = table.querySelectorAll('tr');
-  const results = [];
-  
-  for (let i = 1; i < rows.length; i++) { // skip header
-    const client = rows[i].cells[0].textContent;
-    const fee = rows[i].cells[1].textContent;
-    const writeoff = rows[i].cells[2].querySelector('input').value;
-    
-    if (writeoff && writeoff != '0') {
-      results.push({ client, fee, writeoff });
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Client Code</th>
+          <th>Client Name</th>
+          <th class="right">Net WIP</th>
+          <th class="right">Fee</th>
+          <th class="right">Write-Off</th>
+          <th class="row-actions">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="clientRows"></tbody>
+      <tfoot>
+        <tr>
+          <td colspan="3" class="right">Totals:</td>
+          <td class="right" id="totalNetWip">0.00</td>
+          <td class="right" id="totalFee">0.00</td>
+          <td class="right" id="totalWriteOff">0.00</td>
+          <td class="small" id="totalCount">0 clients</td>
+        </tr>
+      </tfoot>
+    </table>
+
+    <button class="btn-primary" id="submitBtn">Submit Session</button>
+  </div>
+
+  <script>
+    const tbody = document.getElementById('clientRows');
+    const addRowBtn = document.getElementById('addRowBtn');
+    const submitBtn = document.getElementById('submitBtn');
+
+    const totalNetWipEl = document.getElementById('totalNetWip');
+    const totalFeeEl = document.getElementById('totalFee');
+    const totalWriteOffEl = document.getElementById('totalWriteOff');
+    const totalCountEl = document.getElementById('totalCount');
+
+    function addRow(initial = {}) {
+      const row = document.createElement('tr');
+
+      row.innerHTML = `
+        <td class="row-index"></td>
+        <td><input type="text" class="client-code" placeholder="C1001"></td>
+        <td><input type="text" class="client-name" placeholder="Client Pty Ltd"></td>
+        <td class="right"><input type="number" class="net-wip" step="0.01" min="0" placeholder="0"></td>
+        <td class="right"><input type="number" class="fee" step="0.01" min="0" placeholder="0"></td>
+        <td class="right"><input type="number" class="write-off" step="0.01" min="0" readonly></td>
+        <td class="row-actions"><button class="btn-danger remove-row">Remove</button></td>
+      `;
+
+      if (initial.clientCode) row.querySelector('.client-code').value = initial.clientCode;
+      if (initial.clientName) row.querySelector('.client-name').value = initial.clientName;
+      if (initial.netWip != null) row.querySelector('.net-wip').value = initial.netWip;
+      if (initial.fee != null) row.querySelector('.fee').value = initial.fee;
+
+      const netWipInput = row.querySelector('.net-wip');
+      const feeInput = row.querySelector('.fee');
+      const removeBtn = row.querySelector('.remove-row');
+
+      function recalcRow() {
+        const netWip = parseFloat(netWipInput.value) || 0;
+        const fee = parseFloat(feeInput.value) || 0;
+        let writeOff = netWip - fee;
+        if (writeOff < 0) writeOff = 0;
+        row.querySelector('.write-off').value = writeOff.toFixed(2);
+        recalcTotals();
+      }
+
+      netWipInput.addEventListener('input', recalcRow);
+      feeInput.addEventListener('input', recalcRow);
+
+      removeBtn.addEventListener('click', () => {
+        row.remove();
+        refreshRowIndexes();
+        recalcTotals();
+      });
+
+      tbody.appendChild(row);
+      refreshRowIndexes();
+      recalcRow();
     }
-  }
-  
-  if (results.length === 0) {
-    alert("No write-offs entered.");
-  } else {
-    console.log("Write-Offs Submitted:", results);
-    alert("Write-offs submitted! Check console for details.");
-  }
-}
-</script>
 
+    function refreshRowIndexes() {
+      [...tbody.querySelectorAll('tr')].forEach((row, i) => {
+        row.querySelector('.row-index').textContent = i + 1;
+      });
+    }
+
+    function recalcTotals() {
+      let totalNetWip = 0;
+      let totalFee = 0;
+      let totalWriteOff = 0;
+
+      const rows = tbody.querySelectorAll('tr');
+      rows.forEach(row => {
+        const netWip = parseFloat(row.querySelector('.net-wip').value) || 0;
+        const fee = parseFloat(row.querySelector('.fee').value) || 0;
+        const writeOff = parseFloat(row.querySelector('.write-off').value) || 0;
+
+        totalNetWip += netWip;
+        totalFee += fee;
+        totalWriteOff += writeOff;
+      });
+
+      totalNetWipEl.textContent = totalNetWip.toFixed(2);
+      totalFeeEl.textContent = totalFee.toFixed(2);
+      totalWriteOffEl.textContent = totalWriteOff.toFixed(2);
+      totalCountEl.textContent = rows.length + " clients";
+    }
+
+    function buildPayload() {
+      const partnerId = document.getElementById('partnerId').value.trim();
+      const partnerName = document.getElementById('partnerName').value.trim();
+      const sessionTimestamp = new Date().toISOString();
+
+      const clients = [];
+
+      const rows = tbody.querySelectorAll('tr');
+      rows.forEach(row => {
+        const clientCode = row.querySelector('.client-code').value.trim();
+        const clientName = row.querySelector('.client-name').value.trim();
+        const netWip = parseFloat(row.querySelector('.net-wip').value) || 0;
+        const fee = parseFloat(row.querySelector('.fee').value) || 0;
+        const writeOff = parseFloat(row.querySelector('.write-off').value) || 0;
+
+        if (clientCode || clientName) {
+          clients.push({ clientCode, clientName, netWip, fee, writeOff });
+        }
+      });
+
+      return {
+        partnerId,
+        partnerName,
+        sessionTimestamp,
+        clients,
+        totals: {
+          totalNetWip: parseFloat(totalNetWipEl.textContent) || 0,
+          totalFee: parseFloat(totalFeeEl.textContent) || 0,
+          totalWriteOff: parseFloat(totalWriteOffEl.textContent) || 0,
+          clientCount: clients.length
+        }
+      };
+    }
+
+    addRowBtn.addEventListener('click', () => addRow());
+
+    submitBtn.addEventListener('click', () => {
+      const payload = buildPayload();
+
+      if (!payload.partnerId) {
+        alert("Please enter your Partner ID before submitting.");
+        return;
+      }
+      if (!payload.clients.length) {
+        alert("Please add at least one client before submitting.");
+        return;
+      }
+
+      console.log("JSON to send to SharePoint:", JSON.stringify(payload, null, 2));
+
+      // POST destination here (Power Automate HTTP trigger)
+      // fetch("YOUR_ENDPOINT_URL", {
+      //   method: "POST",
+      //   headers: { "Content-Type": "application/json" },
+      //   body: JSON.stringify(payload)
+      // });
+
+      alert("Session captured. JSON is in the console.");
+    });
+
+    // Start with two blank rows
+    addRow();
+    addRow();
+  </script>
 </body>
 </html>
