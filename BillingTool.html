@@ -154,25 +154,26 @@ function updateTotals() {
     if(index === 0) return;
     const netWip = parseFloat(row.cells[1].textContent.replace(/,/g,'')) || 0;
     const feeInput = row.cells[2].querySelector('input');
-    const fee = parseFloat(feeInput.value) || 0;
+    const feeValue = feeInput.value.trim();
+    const fee = parseFloat(feeValue) || 0;
     const writeOffSpan = row.cells[3].querySelector('.writeoff-value');
     const feeWarningSpan = row.cells[3].querySelector('.fee-warning');
 
-    if(fee > netWip) {
-      writeOffSpan.textContent = '';
-      feeWarningSpan.textContent = 'Fee exceeds WIP';
-    } else if(feeInput.value === '') {
+    if(feeValue === '') {
       writeOffSpan.textContent = '';
       feeWarningSpan.textContent = '\u00A0';
+    } else if(fee > netWip) {
+      writeOffSpan.textContent = '';
+      feeWarningSpan.textContent = 'Fee exceeds WIP';
     } else {
       writeOffSpan.textContent = Math.round(netWip - fee);
       feeWarningSpan.textContent = '\u00A0';
+      totalFee += fee;
+      totalWriteOff += Math.round(netWip - fee);
     }
 
     totalClients += 1;
     totalWIP += netWip;
-    totalFee += Math.min(fee, netWip);
-    totalWriteOff += Math.min(Math.max(netWip - fee, 0), netWip);
   });
 
   document.getElementById('totalClients').textContent = totalClients;
@@ -197,9 +198,10 @@ function submitWriteOffs() {
     if(index === 0) return;
     const client = row.cells[0].textContent;
     const netWip = row.cells[1].textContent;
-    const fee = row.cells[2].querySelector('input').value;
+    const feeInput = row.cells[2].querySelector('input');
+    const fee = feeInput.value.trim();
     const writeOff = row.cells[3].querySelector('.writeoff-value').textContent;
-    if(fee && fee !== '') {
+    if(fee !== '' && parseFloat(fee) <= parseFloat(netWip)) {
       results.push({client, netWip, fee, writeOff});
     }
   });
