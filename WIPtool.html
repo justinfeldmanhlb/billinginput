@@ -2,15 +2,29 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Write-Offs</title>
+<title>Client Write-Offs</title>
 <style>
-  body { font-family: Arial, sans-serif; margin: 0; background: #f5f7fa; padding: 20px; }
+  body { font-family: Arial, sans-serif; margin: 0; background: #ffffff; padding: 20px; }
   
+  /* ===== HEADER ===== */
+  .header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .header img {
+    height: 50px;
+    margin-right: 20px;
+  }
+  .header h2 {
+    color: #0078d4;
+    margin: 0;
+  }
+
   /* ===== TABLE ===== */
-  table { border-collapse: collapse; width: 100%; margin-top: 20px; background: #fff; }
+  table { border-collapse: collapse; width: 100%; background: #fff; }
   th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: center; }
   th { background: #0078d4; color: #fff; }
-
   input[type="number"] {
     width: 80px; 
     padding: 4px; 
@@ -39,58 +53,60 @@
 </head>
 <body>
 
-<h2>Client Write-Offs</h2>
+<div class="header">
+  <img src="HLBlogo.png" alt="HLB Logo">
+  <h2>Client Write-Offs</h2>
+</div>
 
 <table id="writeoffTable">
   <tr>
     <th>Client</th>
-    <th>Fee Amount ($)</th>
+    <th>Net WIP ($)</th>
+    <th>Fee ($)</th>
     <th>Write-Off ($)</th>
   </tr>
-  <!-- Dummy client rows -->
-  <tr><td>Client 1</td><td>12500</td><td><input type="number" min="0" value="0"></td></tr>
-  <tr><td>Client 2</td><td>8200</td><td><input type="number" min="0" value="0"></td></tr>
-  <tr><td>Client 3</td><td>15300</td><td><input type="number" min="0" value="0"></td></tr>
-  <tr><td>Client 4</td><td>6700</td><td><input type="number" min="0" value="0"></td></tr>
-  <tr><td>Client 5</td><td>9800</td><td><input type="number" min="0" value="0"></td></tr>
-  <tr><td>Client 6</td><td>14100</td><td><input type="number" min="0" value="0"></td></tr>
-  <tr><td>Client 7</td><td>7500</td><td><input type="number" min="0" value="0"></td></tr>
-  <tr><td>Client 8</td><td>11200</td><td><input type="number" min="0" value="0"></td></tr>
-  <tr><td>Client 9</td><td>5900</td><td><input type="number" min="0" value="0"></td></tr>
-  <tr><td>Client 10</td><td>10400</td><td><input type="number" min="0" value="0"></td></tr>
+  <tr><td>Client 1</td><td>12500</td><td><input type="number" min="0" value="0"></td><td>12500</td></tr>
+  <tr><td>Client 2</td><td>8200</td><td><input type="number" min="0" value="0"></td><td>8200</td></tr>
+  <tr><td>Client 3</td><td>15300</td><td><input type="number" min="0" value="0"></td><td>15300</td></tr>
+  <tr><td>Client 4</td><td>6700</td><td><input type="number" min="0" value="0"></td><td>6700</td></tr>
+  <tr><td>Client 5</td><td>9800</td><td><input type="number" min="0" value="0"></td><td>9800</td></tr>
+  <tr><td>Client 6</td><td>14100</td><td><input type="number" min="0" value="0"></td><td>14100</td></tr>
+  <tr><td>Client 7</td><td>7500</td><td><input type="number" min="0" value="0"></td><td>7500</td></tr>
+  <tr><td>Client 8</td><td>11200</td><td><input type="number" min="0" value="0"></td><td>11200</td></tr>
+  <tr><td>Client 9</td><td>5900</td><td><input type="number" min="0" value="0"></td><td>5900</td></tr>
+  <tr><td>Client 10</td><td>10400</td><td><input type="number" min="0" value="0"></td><td>10400</td></tr>
 </table>
 
 <button class="submit-btn" onclick="submitWriteOffs()">Submit Write-Offs</button>
 
 <script>
 const table = document.getElementById('writeoffTable');
-const rows = table.querySelectorAll('tr');
 
-rows.forEach((row, index) => {
+table.querySelectorAll('tr').forEach((row, index) => {
   if(index === 0) return; // skip header
   const feeInput = row.cells[2].querySelector('input');
   const netWip = parseFloat(row.cells[1].textContent.replace(/,/g,'')) || 0;
-  
+
   feeInput.addEventListener('input', () => {
     let fee = parseFloat(feeInput.value) || 0;
     let writeOff = netWip - fee;
     if(writeOff < 0) writeOff = 0;
-    row.cells[2].querySelector('input').value = Math.round(writeOff);
+    row.cells[3].textContent = Math.round(writeOff);
   });
 });
 
 function submitWriteOffs() {
   const results = [];
-  const rows = table.querySelectorAll('tr');
-  for (let i = 1; i < rows.length; i++) {
-    const client = rows[i].cells[0].textContent;
-    const fee = rows[i].cells[2].querySelector('input').value;
-    const netWip = rows[i].cells[1].textContent;
-    const writeOff = rows[i].cells[2].querySelector('input').value;
+  table.querySelectorAll('tr').forEach((row, index) => {
+    if(index === 0) return;
+    const client = row.cells[0].textContent;
+    const netWip = row.cells[1].textContent;
+    const fee = row.cells[2].querySelector('input').value;
+    const writeOff = row.cells[3].textContent;
     if(fee && fee != '0') {
       results.push({client, netWip, fee, writeOff});
     }
-  }
+  });
   if(results.length === 0) {
     alert("No write-offs entered.");
   } else {
