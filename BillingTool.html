@@ -49,7 +49,7 @@
 
   /* ===== TABLE ===== */
   table { border-collapse: collapse; width: 100%; background: #fff; margin-bottom: 10px; }
-  th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: center; }
+  th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: center; vertical-align: middle; }
   th { background: #0078d4; color: #fff; }
   input[type="number"] {
     width: 80px; 
@@ -61,6 +61,22 @@
   input[type=number]::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
+  }
+
+  /* ===== Write-off warning ===== */
+  .writeoff-container {
+    position: relative;
+    height: 30px; /* reserve space for warning text */
+  }
+  .writeoff-value {
+    display: block;
+  }
+  .fee-warning {
+    color: red;
+    font-size: 12px;
+    display: block;
+    line-height: 14px;
+    height: 14px;
   }
 
   /* ===== SUBMIT BUTTON ===== */
@@ -95,16 +111,16 @@
     <th>Fee ($)</th>
     <th>Write-Off ($)</th>
   </tr>
-  <tr><td>Client 1</td><td>12500</td><td><input type="number" min="0" placeholder=""></td><td></td></tr>
-  <tr><td>Client 2</td><td>8200</td><td><input type="number" min="0" placeholder=""></td><td></td></tr>
-  <tr><td>Client 3</td><td>15300</td><td><input type="number" min="0" placeholder=""></td><td></td></tr>
-  <tr><td>Client 4</td><td>6700</td><td><input type="number" min="0" placeholder=""></td><td></td></tr>
-  <tr><td>Client 5</td><td>9800</td><td><input type="number" min="0" placeholder=""></td><td></td></tr>
-  <tr><td>Client 6</td><td>14100</td><td><input type="number" min="0" placeholder=""></td><td></td></tr>
-  <tr><td>Client 7</td><td>7500</td><td><input type="number" min="0" placeholder=""></td><td></td></tr>
-  <tr><td>Client 8</td><td>11200</td><td><input type="number" min="0" placeholder=""></td><td></td></tr>
-  <tr><td>Client 9</td><td>5900</td><td><input type="number" min="0" placeholder=""></td><td></td></tr>
-  <tr><td>Client 10</td><td>10400</td><td><input type="number" min="0" placeholder=""></td><td></td></tr>
+  <tr><td>Client 1</td><td>12500</td><td><input type="number" min="0" placeholder=""></td><td><div class="writeoff-container"><span class="writeoff-value"></span><span class="fee-warning">&nbsp;</span></div></td></tr>
+  <tr><td>Client 2</td><td>8200</td><td><input type="number" min="0" placeholder=""></td><td><div class="writeoff-container"><span class="writeoff-value"></span><span class="fee-warning">&nbsp;</span></div></td></tr>
+  <tr><td>Client 3</td><td>15300</td><td><input type="number" min="0" placeholder=""></td><td><div class="writeoff-container"><span class="writeoff-value"></span><span class="fee-warning">&nbsp;</span></div></td></tr>
+  <tr><td>Client 4</td><td>6700</td><td><input type="number" min="0" placeholder=""></td><td><div class="writeoff-container"><span class="writeoff-value"></span><span class="fee-warning">&nbsp;</span></div></td></tr>
+  <tr><td>Client 5</td><td>9800</td><td><input type="number" min="0" placeholder=""></td><td><div class="writeoff-container"><span class="writeoff-value"></span><span class="fee-warning">&nbsp;</span></div></td></tr>
+  <tr><td>Client 6</td><td>14100</td><td><input type="number" min="0" placeholder=""></td><td><div class="writeoff-container"><span class="writeoff-value"></span><span class="fee-warning">&nbsp;</span></div></td></tr>
+  <tr><td>Client 7</td><td>7500</td><td><input type="number" min="0" placeholder=""></td><td><div class="writeoff-container"><span class="writeoff-value"></span><span class="fee-warning">&nbsp;</span></div></td></tr>
+  <tr><td>Client 8</td><td>11200</td><td><input type="number" min="0" placeholder=""></td><td><div class="writeoff-container"><span class="writeoff-value"></span><span class="fee-warning">&nbsp;</span></div></td></tr>
+  <tr><td>Client 9</td><td>5900</td><td><input type="number" min="0" placeholder=""></td><td><div class="writeoff-container"><span class="writeoff-value"></span><span class="fee-warning">&nbsp;</span></div></td></tr>
+  <tr><td>Client 10</td><td>10400</td><td><input type="number" min="0" placeholder=""></td><td><div class="writeoff-container"><span class="writeoff-value"></span><span class="fee-warning">&nbsp;</span></div></td></tr>
 </table>
 
 <!-- ===== TOTALS TABLE ===== -->
@@ -139,13 +155,24 @@ function updateTotals() {
     const netWip = parseFloat(row.cells[1].textContent.replace(/,/g,'')) || 0;
     const feeInput = row.cells[2].querySelector('input');
     const fee = parseFloat(feeInput.value) || 0;
-    const writeOffText = row.cells[3].textContent;
-    let writeOff = isNaN(parseFloat(writeOffText)) ? 0 : parseFloat(writeOffText);
+    const writeOffSpan = row.cells[3].querySelector('.writeoff-value');
+    const feeWarningSpan = row.cells[3].querySelector('.fee-warning');
+
+    if(fee > netWip) {
+      writeOffSpan.textContent = '';
+      feeWarningSpan.textContent = 'Fee exceeds WIP';
+    } else if(feeInput.value === '') {
+      writeOffSpan.textContent = '';
+      feeWarningSpan.textContent = '\u00A0';
+    } else {
+      writeOffSpan.textContent = Math.round(netWip - fee);
+      feeWarningSpan.textContent = '\u00A0';
+    }
 
     totalClients += 1;
     totalWIP += netWip;
-    totalFee += fee;
-    totalWriteOff += writeOffText === "Fee exceeds WIP" ? 0 : writeOff;
+    totalFee += Math.min(fee, netWip);
+    totalWriteOff += Math.min(Math.max(netWip - fee, 0), netWip);
   });
 
   document.getElementById('totalClients').textContent = totalClients;
@@ -154,27 +181,14 @@ function updateTotals() {
   document.getElementById('totalWriteOff').textContent = totalWriteOff;
 }
 
+// Listen for fee input changes
 table.querySelectorAll('tr').forEach((row, index) => {
   if(index === 0) return;
   const feeInput = row.cells[2].querySelector('input');
-  const netWip = parseFloat(row.cells[1].textContent.replace(/,/g,'')) || 0;
-
-  feeInput.addEventListener('input', () => {
-    if(feeInput.value === '') {
-      row.cells[3].textContent = '';
-    } else {
-      let fee = parseFloat(feeInput.value) || 0;
-      if(fee > netWip) {
-        row.cells[3].textContent = "Fee exceeds WIP";
-      } else {
-        let writeOff = netWip - fee;
-        row.cells[3].textContent = Math.round(writeOff);
-      }
-    }
-    updateTotals();
-  });
+  feeInput.addEventListener('input', updateTotals);
 });
 
+// Initial totals
 updateTotals();
 
 function submitWriteOffs() {
@@ -184,7 +198,7 @@ function submitWriteOffs() {
     const client = row.cells[0].textContent;
     const netWip = row.cells[1].textContent;
     const fee = row.cells[2].querySelector('input').value;
-    const writeOff = row.cells[3].textContent;
+    const writeOff = row.cells[3].querySelector('.writeoff-value').textContent;
     if(fee && fee !== '') {
       results.push({client, netWip, fee, writeOff});
     }
