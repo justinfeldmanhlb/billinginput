@@ -2,214 +2,143 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>WIP Write-Off Tool (Simple)</title>
+<title>WIP Write-Off Tool</title>
 <style>
-    body {
-        font-family: Arial, sans-serif;
-        margin: 20px;
-        background: #f5f5f5;
-    }
-
-    label {
-        font-size: 14px;
-        margin-right: 8px;
-    }
-
-    input[type="text"], input[type="number"] {
-        padding: 6px 8px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        font-size: 14px;
-        width: 180px;
-    }
-
-    button {
-        padding: 6px 12px;
-        border: none;
-        background: #0078d4;
-        color: white;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 14px;
-    }
-
-    button:hover {
-        background: #005ea3;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-        background: white;
-    }
-
-    th, td {
-        padding: 6px 10px;
-        border: 1px solid #ddd;
-        font-size: 14px;
-    }
-
-    th {
-        background: #e8eef5;
-    }
-
-    .right { text-align: right; }
-
-    #jsonOutput {
-        margin-top: 20px;
-        padding: 12px;
-        background: #fff;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        white-space: pre-wrap;
-        font-family: Consolas, monospace;
-        display: none;
-    }
+  body { font-family: Arial, sans-serif; margin: 20px; background: #f5f7fa; }
+  h1, h2 { margin: 0 0 10px 0; }
+  label { margin-right: 10px; }
+  input, select, button { padding: 6px 10px; margin: 4px 0; border-radius: 4px; border: 1px solid #ccc; }
+  button { cursor: pointer; }
+  table { width: 100%; border-collapse: collapse; margin-top: 12px; background: #fff; }
+  th, td { border: 1px solid #ccc; padding: 6px 10px; text-align: right; }
+  th { background: #eef3f7; text-align: left; }
+  tfoot td { font-weight: bold; background: #f0f4f8; }
+  td.left { text-align: left; }
 </style>
 </head>
 <body>
 
-<h2>WIP Write-Off Tool</h2>
+<h1>WIP Write-Off Tool</h1>
 
-<!-- Name -->
-<div style="margin-bottom: 10px;">
-    <label>Name:</label>
-    <input type="text" id="partnerName" placeholder="Enter your name">
+<!-- Partner Name -->
+<div>
+  <label for="partnerName">Name:</label>
+  <input type="text" id="partnerName" placeholder="Your name">
 </div>
 
-<!-- Add client -->
-<div style="margin-bottom: 10px;">
-    <label>Client Add:</label>
-    <button id="addClientBtn">Add Client</button>
+<!-- Add Client -->
+<div style="margin-top:10px;">
+  <label for="clientSelect">Client Add:</label>
+  <select id="clientSelect">
+    <option value="Client 1">Client 1</option>
+    <option value="Client 2">Client 2</option>
+    <option value="Client 3">Client 3</option>
+    <option value="Client 4">Client 4</option>
+    <option value="Client 5">Client 5</option>
+    <option value="Client 6">Client 6</option>
+    <option value="Client 7">Client 7</option>
+    <option value="Client 8">Client 8</option>
+    <option value="Client 9">Client 9</option>
+    <option value="Client 10">Client 10</option>
+  </select>
+  <button id="addClientBtn">Add Client</button>
 </div>
 
-<!-- Table -->
-<table id="clientTable">
-    <thead>
-        <tr>
-            <th>Client</th>
-            <th class="right">Net WIP</th>
-            <th class="right">Fee</th>
-            <th class="right">Write Off</th>
-        </tr>
-    </thead>
-    <tbody id="clientRows">
-        <!-- rows will be injected -->
-    </tbody>
-    <tfoot>
-        <tr>
-            <th>Total Clients:</th>
-            <th class="right" id="totalWip">0.00</th>
-            <th class="right" id="totalFee">0.00</th>
-            <th class="right" id="totalWrite">0.00</th>
-        </tr>
-    </tfoot>
+<!-- WIP Table -->
+<table>
+  <thead>
+    <tr>
+      <th class="left">Client</th>
+      <th>Net WIP</th>
+      <th>Fee</th>
+      <th>Write-Off</th>
+    </tr>
+  </thead>
+  <tbody id="clientTableBody">
+    <!-- client rows go here -->
+  </tbody>
+  <tfoot>
+    <tr>
+      <td class="left">Totals:</td>
+      <td id="totalNetWip">0.00</td>
+      <td id="totalFee">0.00</td>
+      <td id="totalWriteOff">0.00</td>
+    </tr>
+    <tr>
+      <td class="left">Total Clients:</td>
+      <td colspan="3" id="totalClients">0 clients</td>
+    </tr>
+  </tfoot>
 </table>
 
-<!-- Submit -->
-<div style="margin-top: 20px;">
-    <button id="submitBtn">Submit</button>
-</div>
-
-<!-- JSON Output -->
-<div id="jsonOutput"></div>
-
 <script>
-    const tbody = document.getElementById("clientRows");
-    const addBtn = document.getElementById("addClientBtn");
-    const submitBtn = document.getElementById("submitBtn");
+  const dummyWip = {
+    "Client 1": 12000,
+    "Client 2": 8500,
+    "Client 3": 15300,
+    "Client 4": 6700,
+    "Client 5": 9800,
+    "Client 6": 14100,
+    "Client 7": 7500,
+    "Client 8": 11200,
+    "Client 9": 5900,
+    "Client 10": 10400
+  };
 
-    const totalWipEl = document.getElementById("totalWip");
-    const totalFeeEl = document.getElementById("totalFee");
-    const totalWriteEl = document.getElementById("totalWrite");
+  const tbody = document.getElementById('clientTableBody');
+  const clientSelect = document.getElementById('clientSelect');
+  const addClientBtn = document.getElementById('addClientBtn');
 
-    function addRow() {
-        const tr = document.createElement("tr");
+  const totalNetWipEl = document.getElementById('totalNetWip');
+  const totalFeeEl = document.getElementById('totalFee');
+  const totalWriteOffEl = document.getElementById('totalWriteOff');
+  const totalClientsEl = document.getElementById('totalClients');
 
-        tr.innerHTML = `
-            <td><input type="text" class="client-name" placeholder="Client name"></td>
-            <td class="right"><input type="number" class="net-wip" min="0" step="0.01" value="0"></td>
-            <td class="right"><input type="number" class="fee" min="0" step="0.01" value="0"></td>
-            <td class="right"><input type="number" class="writeoff" readonly></td>
-        `;
-
-        const netWipInput = tr.querySelector('.net-wip');
-        const feeInput = tr.querySelector('.fee');
-
-        function recalc() {
-            const wip = parseFloat(netWipInput.value) || 0;
-            const fee = parseFloat(feeInput.value) || 0;
-            const write = Math.max(wip - fee, 0);
-
-            tr.querySelector('.writeoff').value = write.toFixed(2);
-
-            recalcTotals();
-        }
-
-        netWipInput.addEventListener("input", recalc);
-        feeInput.addEventListener("input", recalc);
-
-        tbody.appendChild(tr);
-        recalc();
-    }
-
-    function recalcTotals() {
-        let totalWip = 0;
-        let totalFee = 0;
-        let totalWrite = 0;
-
-        [...tbody.querySelectorAll("tr")].forEach(row => {
-            totalWip += parseFloat(row.querySelector(".net-wip").value) || 0;
-            totalFee += parseFloat(row.querySelector(".fee").value) || 0;
-            totalWrite += parseFloat(row.querySelector(".writeoff").value) || 0;
-        });
-
-        totalWipEl.textContent = totalWip.toFixed(2);
-        totalFeeEl.textContent = totalFee.toFixed(2);
-        totalWriteEl.textContent = totalWrite.toFixed(2);
-    }
-
-    function buildJSON() {
-        const name = document.getElementById("partnerName").value.trim();
-        const date = new Date().toISOString();
-
-        const clients = [];
-
-        [...tbody.querySelectorAll("tr")].forEach(row => {
-            const client = row.querySelector(".client-name").value.trim();
-            const wip = parseFloat(row.querySelector(".net-wip").value) || 0;
-            const fee = parseFloat(row.querySelector(".fee").value) || 0;
-            const write = parseFloat(row.querySelector(".writeoff").value) || 0;
-
-            if (client) {
-                clients.push({ client, fee, writeOff: write });
-            }
-        });
-
-        return {
-            name,
-            date,
-            clients,
-            totals: {
-                fee: parseFloat(totalFeeEl.textContent),
-                writeOff: parseFloat(totalWriteEl.textContent)
-            }
-        };
-    }
-
-    submitBtn.addEventListener("click", () => {
-        const jsonObj = buildJSON();
-        const jsonOut = document.getElementById("jsonOutput");
-
-        jsonOut.style.display = "block";
-        jsonOut.textContent = JSON.stringify(jsonObj, null, 2);
+  function recalcTotals() {
+    let totalNetWip = 0, totalFee = 0, totalWriteOff = 0;
+    const rows = tbody.querySelectorAll('tr');
+    rows.forEach(row => {
+      const netWip = parseFloat(row.querySelector('.net-wip').textContent) || 0;
+      const fee = parseFloat(row.querySelector('.fee').value) || 0;
+      const writeOff = parseFloat(row.querySelector('.write-off').textContent) || 0;
+      totalNetWip += netWip;
+      totalFee += fee;
+      totalWriteOff += writeOff;
     });
+    totalNetWipEl.textContent = totalNetWip.toFixed(2);
+    totalFeeEl.textContent = totalFee.toFixed(2);
+    totalWriteOffEl.textContent = totalWriteOff.toFixed(2);
+    totalClientsEl.textContent = rows.length + ' clients';
+  }
 
-    addBtn.addEventListener("click", addRow);
+  function recalcWriteOff(row) {
+    const netWip = parseFloat(row.querySelector('.net-wip').textContent) || 0;
+    const fee = parseFloat(row.querySelector('.fee').value) || 0;
+    let writeOff = netWip - fee;
+    if (writeOff < 0) writeOff = 0;
+    row.querySelector('.write-off').textContent = writeOff.toFixed(2);
+    recalcTotals();
+  }
 
-    // Start with one blank row
-    addRow();
+  function addClient(name) {
+    const row = document.createElement('tr');
+    const netWip = dummyWip[name] || 0;
+    row.innerHTML = `
+      <td class="left">${name}</td>
+      <td class="net-wip">${netWip}</td>
+      <td><input type="number" class="fee" min="0" step="0.01"></td>
+      <td class="write-off">${netWip.toFixed(2)}</td>
+    `;
+    const feeInput = row.querySelector('.fee');
+    feeInput.addEventListener('input', () => recalcWriteOff(row));
+    tbody.appendChild(row);
+    recalcTotals();
+  }
+
+  addClientBtn.addEventListener('click', () => {
+    const clientName = clientSelect.value;
+    addClient(clientName);
+  });
 </script>
 
 </body>
