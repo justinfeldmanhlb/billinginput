@@ -39,63 +39,34 @@
     justify-content: center;
     user-select: none;
   }
-  .nav-button:hover {
-    background-color: #005ea3;
-  }
-  .nav-button.active {
-    background-color: #005ea3;
-    cursor: default;
-  }
+  .nav-button:hover { background-color: #005ea3; }
+  .nav-button.active { background-color: #005ea3; cursor: default; }
 
   /* ===== TABLE ===== */
   table { border-collapse: collapse; width: 100%; background: #fff; margin-bottom: 10px; }
   th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: center; vertical-align: middle; }
   th { background: #0078d4; color: #fff; }
   input[type="number"] {
-    width: 80px; 
-    padding: 4px; 
-    text-align: right;
-    -moz-appearance: textfield;
+    width: 80px; padding: 4px; text-align: right; -moz-appearance: textfield;
   }
   input[type=number]::-webkit-inner-spin-button,
-  input[type=number]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
+  input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 
   /* ===== Write-off warning ===== */
-  .writeoff-container {
-    position: relative;
-    height: 30px; /* reserve space for warning text */
-  }
-  .writeoff-value {
-    display: block;
-  }
-  .fee-warning {
-    color: red;
-    font-size: 12px;
-    display: block;
-    line-height: 14px;
-    height: 14px;
-  }
+  .writeoff-container { position: relative; height: 30px; }
+  .writeoff-value { display: block; }
+  .fee-warning { color: red; font-size: 12px; display: block; line-height: 14px; height: 14px; }
 
   /* ===== SUBMIT BUTTON ===== */
   .submit-btn {
-    margin-top: 20px;
-    padding: 10px 20px;
-    font-size: 16px;
-    background: #0078d4;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
+    margin-top: 20px; padding: 10px 20px; font-size: 16px;
+    background: #0078d4; color: #fff; border: none; border-radius: 6px; cursor: pointer;
   }
   .submit-btn:hover { background: #005ea3; }
 </style>
 </head>
 <body>
 
-<!-- Navigation bar -->
 <div class="navbar">
   <img src="HLBlogo.png" alt="HLB Logo" />
   <div class="nav-buttons">
@@ -123,7 +94,6 @@
   <tr><td>Client 10</td><td>10400</td><td><input type="number" min="0" placeholder=""></td><td><div class="writeoff-container"><span class="writeoff-value"></span><span class="fee-warning">&nbsp;</span></div></td></tr>
 </table>
 
-<!-- ===== TOTALS TABLE ===== -->
 <table id="totalsTable">
   <tr style="background:#0078d4; color:#fff;">
     <th>Total Clients</th>
@@ -168,11 +138,11 @@ function updateTotals() {
     } else {
       writeOffSpan.textContent = Math.round(netWip - fee);
       feeWarningSpan.textContent = '\u00A0';
+      totalClients += 1;          // Only count client if fee entered and valid
       totalFee += fee;
       totalWriteOff += Math.round(netWip - fee);
     }
 
-    totalClients += 1;
     totalWIP += netWip;
   });
 
@@ -182,7 +152,6 @@ function updateTotals() {
   document.getElementById('totalWriteOff').textContent = totalWriteOff;
 }
 
-// Listen for fee input changes
 table.querySelectorAll('tr').forEach((row, index) => {
   if(index === 0) return;
   const feeInput = row.cells[2].querySelector('input');
